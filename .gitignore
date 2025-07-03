@@ -141,6 +141,7 @@ celerybeat.pid
 env/
 venv/
 ENV/
+venv_b/
 env.bak/
 venv.bak/
 
@@ -205,3 +206,32 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Optional: secrets or model files
+.env
+*.pth
+
+# Frontend
+.next/
+out/
+node_modules/
+.tailwind-cache/
+
+# Deployment
+*.log
+docker-compose.override.yml
+
+# Model files
+*.pt
+*.bin
+*.ckpt
+
+# Audio cache
+audio_output/
+*.mp3
+*.wav
+*.ogg
+*.m4a
+temp/
+tmp/
+temp_audio/

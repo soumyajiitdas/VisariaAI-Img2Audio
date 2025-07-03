@@ -43,6 +43,6 @@ Please open an issue or submit a PR for any improvements.
 Licensed under the **Apache License 2.0**.  
 See [`LICENSE`](./LICENSE) for details.
 
-<p align="center"><strong>Built with ❤️ in India</strong></p>
+<p align="center"><strong>Crafted with ❤️ in India...</strong></p>
 
 ---

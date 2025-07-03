@@ -1,0 +1,17 @@
+# for backend setup
+fastapi==0.115.14
+python-dotenv==1.1.1
+python-multipart==0.0.20
+uvicorn==0.35.0
+
+# for BLIP model
+transformers==4.41.1
+torch==2.3.0 
+Pillow
+numpy==1.26.4
+
+# for google TTS
+gTTS==2.5.4
+
+# for google translation
+googletrans==4.0.0-rc1
