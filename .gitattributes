@@ -1,2 +1,2 @@
-# .gitattributes
-* text=auto
+# Force consistent LF endings in source files
+* text=auto eol=lf
