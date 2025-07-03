@@ -9,65 +9,60 @@ export default function Layout({ children }) {
   const router = useRouter();
   const [darkMode, setDarkMode] = useState(false);
 
-useEffect(() => {
-  const stored = localStorage.getItem("dark-mode");
-  if (stored === "true") {
-    setDarkMode(true);
-  }
-}, []);
+  useEffect(() => {
+    const stored = localStorage.getItem("dark-mode");
+    if (stored === "true") setDarkMode(true);
+  }, []);
 
-useEffect(() => {
-  if (darkMode) {
-    document.documentElement.classList.add("dark");
-    localStorage.setItem("dark-mode", "true");
-  } else {
-    document.documentElement.classList.remove("dark");
-    localStorage.setItem("dark-mode", "false");
-  }
-}, [darkMode]);
-
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("dark-mode", "true");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("dark-mode", "false");
+    }
+  }, [darkMode]);
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors">
-      <nav className="flex items-center justify-between px-6 py-4 shadow bg-white dark:bg-gray-800">
-        <h1 className="text-xl font-bold text-blue-600 dark:text-blue-400">
-          VisariaAI
+    <div className="min-h-screen transition-colors duration-300">
+      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur border-b border-gray-300 dark:border-gray-700 shadow-sm px-6 py-4 flex justify-between items-center">
+        <h1 className="text-2xl font-extrabold text-primary-light dark:text-primary-dark tracking-tight">
+          Visaria<span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">AI</span>
         </h1>
-        <div className="space-x-4">
-          <Link
-            href="/"
-            className={`hover:underline ${router.pathname === "/" ? "font-semibold" : ""}`}
-          >
-            Home
-          </Link>
-          {/* <Link
-            href="#"
-            className={`hover:underline ${router.pathname === "/demo" ? "font-semibold" : ""}`}
-          >
-            Demo
-          </Link>
-          <Link
-            href="#"
-            className={`hover:underline ${router.pathname === "/history" ? "font-semibold" : ""}`}
-          >
-            History
-          </Link> */}
-          <Link
-            href="/about"
-            className={`hover:underline ${router.pathname === "/about" ? "font-semibold" : ""}`}
-          >
-            About
-          </Link>
+
+        <div className="space-x-4 flex items-center">
+          <NavLink href="/" label="Home" active={router.pathname === "/"} />
+          <NavLink href="/about" label="About" active={router.pathname === "/about"} />
+
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="ml-4 px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded"
+            className="px-3 py-1.5 text-sm rounded bg-indigo-100 dark:bg-gray-700 text-indigo-700 dark:text-white hover:scale-105 transition"
           >
-            {darkMode ? "Light Mode" : "Dark Mode"}
+            {darkMode ? "☀ Light" : "🌙 Dark"}
           </button>
         </div>
       </nav>
 
-      <main className="py-10 px-6">{children}</main>
+      {/* Main Content */}
+      <main className="px-6 py-10 max-w-5xl mx-auto">
+        {children}
+      </main>
     </div>
   );
 }
+
+// Reusable NavLink Component
+function NavLink({ href, label, active }) {
+  return (
+    <Link
+      href={href}
+      className={`text-sm font-medium transition hover:text-indigo-600 dark:hover:text-violet-400 ${
+        active ? "underline underline-offset-4 font-semibold" : ""
+      }`}
+    >
+      {label}
+    </Link>
+  );
+}
+
