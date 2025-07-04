@@ -23,7 +23,7 @@ export default function ImageUpload() {
   const handleDragOver = (e) => e.preventDefault();
 
   const handleUpload = async () => {
-    if (!image) return alert('Please select an image.');
+    if (!image) return alert('😕 Please select an image.');
 
     const formData = new FormData();
     formData.append('file', image);
@@ -36,7 +36,7 @@ export default function ImageUpload() {
       });
 
       const data = await res.json();
-      let finalCaption = data.caption || 'No caption returned.';
+      let finalCaption = data.caption || '😵‍💫 No caption returned..';
 
       if (language !== 'en') {
         const translateForm = new FormData();
@@ -57,7 +57,7 @@ export default function ImageUpload() {
       setCaption(finalCaption);
     } catch (e) {
       console.error(e);
-      setCaption('Something went wrong.');
+      setCaption('😵 Something went wrong..');
     } finally {
       setLoading(false);
     }
@@ -77,7 +77,7 @@ export default function ImageUpload() {
 
       <div className="mb-5">
         <label className="block mb-2 font-medium text-gray-700 dark:text-yellow-100">
-          Select Language:
+          Select Language 🌐:
         </label>
         <select
           value={language}
@@ -122,16 +122,16 @@ export default function ImageUpload() {
         onClick={handleUpload}
         disabled={loading}
         className={`w-full py-2 px-4 font-semibold text-black rounded-md transition 
-          ${loading ? 'bg-yellow-300 cursor-wait' : 'bg-yellow-500 hover:bg-yellow-600'}`}
+          ${loading ? 'bg-yellow-700 cursor-wait' : 'bg-yellow-500 hover:bg-yellow-700'}`}
       >
-        {loading ? <span className="animate-pulse">Loading...</span> : '🔍 Generate Caption'}
+        {loading ? <span className="animate-pulse">🤔 Thinking...</span> : '🔍 Generate Caption'}
       </button>
 
       {caption && (
         <div className="mt-8 text-center space-y-4">
           <div className="text-base dark:text-yellow-100">
             <span className="block text-sm text-gray-500 dark:text-yellow-400">Caption:</span>
-            <div className="font-medium italic">{caption}</div>
+            <div className="font-medium">" {caption}. "</div>
           </div>
 
           <div className="flex justify-center items-center gap-4">
@@ -158,7 +158,7 @@ export default function ImageUpload() {
 
                 audio.load();
               }}
-              className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-md transition"
+              className="px-4 py-2 bg-yellow-500 hover:bg-yellow-700 text-black font-semibold rounded-md transition"
             >
               🔊 Play Audio
             </button>

@@ -40,7 +40,7 @@ export default function About() {
 
   return (
     <div className="relative max-w-6xl mx-auto px-6 py-14 text-[#181818] dark:text-[#f5f5f5]">
-      <h1 className="text-5xl font-extrabold text-center decoration-yellow-400 mb-4 bg-gradient-to-r from-yellow-700 to-yellow-500 bg-clip-text text-transparent animate-fade-in-up">
+      <h1 className="text-5xl font-extrabold text-center decoration-yellow-400 mb-4 bg-gradient-to-r from-yellow-600 to-yellow-300 bg-clip-text text-transparent animate-fade-in-up">
         📢 About VisariaAI ✨
       </h1>
       <p className="text-center max-w-xl mx-auto text-lg italic text-gray-600 dark:text-gray-400 mb-12 animate-fade-in-up delay-100">
@@ -137,14 +137,14 @@ function InfoCard({ title, children }) {
     <section className="
       border-l-4 border-yellow-500 pl-4 ml-1 py-6 px-5 rounded-xl
       bg-white/60
-      dark:bg-[#1f1f1f]
+      dark:bg-[#1a1a1a]
       dark:border border border-[#2c2c2c]
       dark:shadow-[0_0_6px_rgba(255,255,255,0.05)]
       backdrop-blur-sm
       animate-fade-in-up
       transition-all
     ">
-      <h2 className="text-xl font-bold mb-3 text-yellow-700 dark:text-yellow-300">{title}</h2>
+      <h2 className="text-xl font-bold mb-3 text-yellow-500 dark:text-yellow-300">{title}</h2>
       <div className="text-base leading-relaxed">{children}</div>
     </section>
   );
