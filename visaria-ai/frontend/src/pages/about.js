@@ -40,7 +40,7 @@ export default function About() {
 
   return (
     <div className="relative max-w-6xl mx-auto px-6 py-14 text-[#181818] dark:text-[#f5f5f5]">
-      <h1 className="text-5xl font-extrabold text-center decoration-yellow-400 mb-4 bg-gradient-to-r from-yellow-300 to-yellow-500 bg-clip-text text-transparent animate-fade-in-up">
+      <h1 className="text-5xl font-extrabold text-center decoration-yellow-400 mb-4 bg-gradient-to-r from-yellow-700 to-yellow-500 bg-clip-text text-transparent animate-fade-in-up">
         📢 About VisariaAI ✨
       </h1>
       <p className="text-center max-w-xl mx-auto text-lg italic text-gray-600 dark:text-gray-400 mb-12 animate-fade-in-up delay-100">

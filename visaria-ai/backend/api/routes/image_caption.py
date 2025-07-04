@@ -1,4 +1,3 @@
-# api/routes/image_caption.py
 from fastapi import APIRouter, UploadFile, File
 from fastapi.responses import JSONResponse
 from models.blip_model import generate_caption

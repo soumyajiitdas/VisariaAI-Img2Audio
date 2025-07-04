@@ -13,5 +13,5 @@ numpy==1.26.4
 # for google TTS
 gTTS==2.5.4
 
-# for google translation
+# for google translate
 googletrans==4.0.0-rc1

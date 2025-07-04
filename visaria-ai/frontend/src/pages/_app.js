@@ -1,5 +1,5 @@
 import '../styles/globals.css';
-import Layout from '../components/Layout'; // New layout wrapper
+import Layout from '../components/Layout';      // layout wrapper
 
 export default function MyApp({ Component, pageProps }) {
   return (

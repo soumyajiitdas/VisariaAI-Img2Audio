@@ -4,7 +4,6 @@ export default function ImageUpload() {
   const [image, setImage] = useState(null);
   const [caption, setCaption] = useState('');
   const [loading, setLoading] = useState(false);
-  // const [audioUrl, setAudioUrl] = useState(null);
   const [language, setLanguage] = useState('en');
   const dropRef = useRef();
 
@@ -73,7 +72,7 @@ export default function ImageUpload() {
       </h2>
 
       <p className="text-center text-sm text-gray-600 dark:text-yellow-200 mb-6">
-        Drag an image here or click below to upload. Caption will be spoken aloud.
+        Select or drag-and-drop an image from your device. It will be processed by AI to generate a description with playable audio.
       </p>
 
       <div className="mb-5">
@@ -157,36 +156,12 @@ export default function ImageUpload() {
                   }, 300);
                 }, { once: true });
 
-                // Preload + load to trigger `canplaythrough` reliably
                 audio.load();
               }}
               className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-md transition"
             >
               🔊 Play Audio
             </button>
-
-            {/* <button
-              onClick={() => {
-                const link = document.createElement('a');
-                link.href = audioUrl; // make sure audioUrl is in state
-                link.download = 'visaria_caption.mp3';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                // Toast notification
-                const toast = document.createElement('div');
-                toast.innerText = '✅ Audio downloaded!';
-                toast.className = 'fixed bottom-6 right-6 bg-yellow-600 text-black px-4 py-2 rounded shadow-md animate-fade-in-up';
-                document.body.appendChild(toast);
-                setTimeout(() => {
-                  toast.remove();
-                }, 2000);
-              }}
-              className="p-2 bg-yellow-500 hover:bg-yellow-600 rounded-mid transition"
-              title="Download audio"
-            >
-              ⏬
-            </button> */}
           </div>
         </div>
       )}

@@ -1,4 +1,3 @@
-// src/components/Layout.js
 "use client";
 
 import { useState, useEffect } from "react";
