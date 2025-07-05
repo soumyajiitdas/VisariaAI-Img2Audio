@@ -15,27 +15,91 @@
 It is an open-source AI-powered accessibility tool that converts images into multilingual spoken descriptions using deep learning-based image captioning and text-to-speech synthesis. Built to empower visually impaired users, it bridges the gap between visual content and human understanding.
 > Forked from [Clairvoyance](https://github.com/awkwardish/Clairvoyance_prototype), reimagined for multilingual accessibility and overall improvements.
 
+
 ## 🛠 Features 
 
-- 🖼️ **AI Image Captioning** (BLIP model)
-- 🔉 **Text-to-Speech Output** (via `gTTS`)
-- 🌐 **Multilingual Support**: English, Hindi, Bengali (for now)
-- 🎨 **Modern UI with Dark Mode** for better visibility
+- 🖼️ AI Image Captioning (BLIP model)
+- 🔉 Text-to-Speech Output (via `gTTS`)
+- 🌐 Multilingual Support: English, Hindi, Bengali (for now)
+- 🎨 Modern UI with Dark Mode for better visibility
+- 📑 Drag-and-drop support for the Image files
 - 🔐 Simple, accessible web interface tailored for low-vision and blind users
-- ⬇️ Downloadable audio output of AI generated caption of an image (Comming soon...)
-- 📈 Your generated caption/audio history with image previev (Comming soon...)
-- 📱 Android application version with account sync support (Planned...)
-
-## 📌 Status
-- 🔜 Downloadable audio (⚙️WIP)
-- 🔜 Generated caption/audio history (⚙️WIP)
-- ✅ B̶L̶I̶P̶ A̶I̶ c̶a̶p̶t̶i̶o̶n̶i̶n̶g̶ v̶i̶a̶ H̶u̶g̶g̶i̶n̶g̶ F̶a̶c̶e̶
-- ✅ g̶T̶T̶S̶ a̶u̶d̶i̶o̶ o̶u̶t̶p̶u̶t̶
-- ✅ E̶n̶g̶l̶i̶s̶h̶, H̶i̶n̶d̶i̶, B̶e̶n̶g̶a̶l̶i̶ l̶a̶n̶g̶u̶a̶g̶e̶ s̶u̶p̶p̶o̶r̶t̶
-- ✅ R̶e̶s̶p̶o̶n̶s̶i̶v̶e̶ f̶r̶o̶n̶t̶e̶n̶d̶ w̶i̶t̶h̶ d̶a̶r̶k̶ m̶o̶d̶e̶
 
 
-## 🤝 Contribution & License
+## 🔧 Setup Instructions
+
+### 1. 🖥️ Clone the Repository :
+
+```
+git clone https://github.com/soumyajiitdas/VisariaAI-Img2Audio.git
+cd VisariaAI-Img2Audio/visaria-ai
+```
+
+### 2. 🧩 Frontend Setup (Next.js + Tailwind) :
+
+```
+cd frontend
+npm install
+npm run dev
+```
+
+- 🔗 App will start at : [http://localhost:3000](http://localhost:3000) 🚀
+
+
+### 3. 🧩 Backend Setup (FastAPI) :
+
+```
+cd..                  # if you are in frontend folder
+cd backend
+python -m venv venv           # create a 'venv' python virtual env.
+.\venv\Scripts\Activate           # for Windows
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+- 🔗 API will be running at : [http://localhost:8000](http://localhost:8000) 🚀
+
+
+## 🗃️ Project Structure
+
+```
+visaria-ai/
+├── backend/         # FastAPI backend
+|   ├── api/routs
+|   ├── models
+|   ├── main.py
+|   └── requirements.txt
+|
+└── frontend/        # Next.js + Tailwind frontend
+    ├── components
+    ├── pages
+    └── styles
+
+```
+
+### 🧠 Frontend Notes :
+
+- Page layout: `src/components/Layout.js`
+- Image UI: `src/components/ImageUpload.js`
+- Global styles: `src/styles/globals.css`
+- Pages: `src/pages/`
+
+## 📷 ScreenShorts :
+
+<p align="center">
+  <img src="assets/home.png" width="46%" style="margin-right: 2%;"/>
+  <img src="assets/about.png" width="46%"/>
+</p>
+
+
+
+## 🫠 Planned ToDos
+
+  - 📶 Fully offline application for easy accessible
+  - 📈 Your generated caption/audio history with image preview
+  - 📱 Android application version with account sync support
+
+## 🫱🏻‍🫲🏼 Contribution & License
 
 Pull requests, feedback, and accessibility suggestions are welcome!  
 Please open an issue or submit a PR for any improvements.
