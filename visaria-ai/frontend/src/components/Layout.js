@@ -14,7 +14,7 @@ export default function Layout({ children }) {
     <div className="min-h-screen transition-colors duration-300 bg-background text-text">
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur border-b border-card-border shadow-sm px-6 py-4 flex justify-between items-center">
         <h1 className="text-2xl font-extrabold tracking-tight text-primary">
-          Visaria<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">AI</span>
+          Visaria<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">AI🔊</span>
         </h1>
 
         <div className="space-x-4 flex items-center">

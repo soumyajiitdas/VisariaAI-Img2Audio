@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Play, Download } from 'lucide-react';
 
 export default function ImageUpload() {
@@ -7,12 +7,15 @@ export default function ImageUpload() {
   const [loading, setLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
   const [language, setLanguage] = useState('en');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const dropRef = useRef();
 
   const handleImageChange = (file) => {
     if (file) {
       setImage(file);
       setCaption('');
+      setAudioUrl(null); // Reset audio when new image is selected
     }
   };
 
@@ -25,6 +28,7 @@ export default function ImageUpload() {
   const handleDragOver = (e) => e.preventDefault();
 
   const playAudio = (url) => {
+    setIsPlaying(true);
     const audio = new Audio(url);
     audio.preload = 'auto';
     audio.addEventListener('canplaythrough', () => {
@@ -32,7 +36,31 @@ export default function ImageUpload() {
         audio.play().catch(console.error);
       }, 300);
     }, { once: true });
+    audio.onended = () => {
+      setIsPlaying(false);
+    };
     audio.load();
+  };
+
+  const handleDownload = async () => {
+    if (!audioUrl) return;
+    setIsDownloading(true);
+    try {
+      const response = await fetch(audioUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'caption_audio.mp3';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('😵 Download failed:', error);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const handleUpload = async () => {
@@ -161,23 +189,25 @@ export default function ImageUpload() {
             {audioUrl && (
               <button
                 onClick={() => playAudio(audioUrl)}
+                disabled={isPlaying}
                 className="px-4 py-2 bg-button text-button-text font-semibold rounded-md transition-all duration-300 ease-in-out hover:bg-button-hover transform hover:scale-105 flex items-center gap-2 justify-center"
               >
-                <Play size={20} /> Play Again
+                {isPlaying ? '🎶 Playing...' : <><Play size={20} /> Play Again</>}
               </button>
             )}
             {audioUrl && (
-              <a
-                href={audioUrl}
-                download="caption_audio.mp3"
+              <button
+                onClick={handleDownload}
+                disabled={isDownloading}
                 className="px-4 py-2 bg-button text-button-text font-semibold rounded-md transition-all duration-300 ease-in-out hover:bg-button-hover transform hover:scale-105 flex items-center gap-2 justify-center"
               >
-                <Download size={20} /> Download Audio
-              </a>
+                {isDownloading ? '🚀 Downloading...' : <><Download size={20} /> Download Audio</>}
+              </button>
             )}
           </div>
         </div>
       )}
-    </div>
+
+      </div>
   );
 }
