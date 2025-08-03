@@ -1,9 +1,11 @@
 import { useState, useRef } from 'react';
+import { Play, Download } from 'lucide-react';
 
 export default function ImageUpload() {
   const [image, setImage] = useState(null);
   const [caption, setCaption] = useState('');
   const [loading, setLoading] = useState(false);
+  const [audioUrl, setAudioUrl] = useState(null);
   const [language, setLanguage] = useState('en');
   const dropRef = useRef();
 
@@ -21,6 +23,17 @@ export default function ImageUpload() {
   };
 
   const handleDragOver = (e) => e.preventDefault();
+
+  const playAudio = (url) => {
+    const audio = new Audio(url);
+    audio.preload = 'auto';
+    audio.addEventListener('canplaythrough', () => {
+      setTimeout(() => {
+        audio.play().catch(console.error);
+      }, 300);
+    }, { once: true });
+    audio.load();
+  };
 
   const handleUpload = async () => {
     if (!image) return alert('😕 Please select an image.');
@@ -55,6 +68,19 @@ export default function ImageUpload() {
       }
 
       setCaption(finalCaption);
+
+      // Automatically play audio
+      const audioFormData = new FormData();
+      audioFormData.append('text', finalCaption);
+      audioFormData.append('language', language);
+      const audioResponse = await fetch('http://localhost:8000/tts', {
+        method: 'POST',
+        body: audioFormData,
+      });
+      const audioBlob = await audioResponse.blob();
+      const newAudioUrl = URL.createObjectURL(audioBlob);
+      setAudioUrl(newAudioUrl);
+      playAudio(newAudioUrl);
     } catch (e) {
       console.error(e);
       setCaption('😵 Something went wrong..');
@@ -64,26 +90,24 @@ export default function ImageUpload() {
   };
 
   return (
-    <div className="bg-[#fffdf6] dark:bg-gradient-to-br dark:from-[#121207] dark:to-[#151105] 
-      p-6 rounded-xl shadow-md border border-yellow-300 dark:border-yellow-500 max-w-2xl mx-auto transition">
+    <div className="bg-card p-6 rounded-xl shadow-lg border border-card-border max-w-2xl mx-auto transition-all duration-300 ease-in-out transform hover:scale-[1.01]">
 
-      <h2 className="text-3xl font-bold text-center mb-4 text-yellow-700 dark:text-yellow-300">
+      <h2 className="text-3xl font-bold text-center mb-4 text-primary">
         🖼️ Upload an Image
       </h2>
 
-      <p className="text-center text-sm text-gray-600 dark:text-yellow-200 mb-6">
+      <p className="text-center text-sm text-secondary mb-6">
         Select or drag-and-drop an image from your device. It will be processed by AI to generate a description with playable audio.
       </p>
 
       <div className="mb-5">
-        <label className="block mb-2 font-medium text-gray-700 dark:text-yellow-100">
+        <label className="block mb-2 font-medium text-text">
           Select Language 🌐:
         </label>
         <select
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-          className="w-full px-3 py-2 rounded-md border border-yellow-400 dark:border-yellow-600 
-            bg-white dark:bg-[#1e1e1e] text-gray-800 dark:text-yellow-100 transition"
+          className="w-full px-3 py-2 rounded-md border border-input-border bg-input text-text transition-colors duration-300 focus:ring-2 focus:ring-primary focus:border-transparent"
         >
           <option value="en">English</option>
           <option value="hi">Hindi</option>
@@ -95,7 +119,7 @@ export default function ImageUpload() {
         ref={dropRef}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className="border-2 border-dashed border-yellow-400 rounded-md p-6 mb-4 text-center dark:text-yellow-100 cursor-pointer"
+        className="border-2 border-dashed border-input-border rounded-md p-6 mb-4 text-center text-text cursor-pointer transition-all duration-300 ease-in-out hover:border-primary hover:bg-card-border"
         onClick={() => document.getElementById('fileInput').click()}
       >
         Drag and drop your image here or click to browse
@@ -109,11 +133,10 @@ export default function ImageUpload() {
       </div>
 
       {image && (
-        <div className="mb-6 rounded-md overflow-hidden bg-[#fafafa] dark:bg-[#111111] flex justify-center items-center max-h-80">
+        <div className="mb-6 rounded-md overflow-hidden bg-card flex justify-center items-center max-h-80 shadow-md">
           <img
             src={URL.createObjectURL(image)}
-            alt="Preview"
-            className={`max-h-80 w-auto rounded-md border shadow-md ${loading ? 'blur-sm brightness-75' : ''}`}
+            className={`max-h-80 w-auto rounded-md ${loading ? 'blur-sm brightness-75' : ''}`}
           />
         </div>
       )}
@@ -121,47 +144,37 @@ export default function ImageUpload() {
       <button
         onClick={handleUpload}
         disabled={loading}
-        className={`w-full py-2 px-4 font-semibold text-black rounded-md transition 
-          ${loading ? 'bg-yellow-700 cursor-wait' : 'bg-yellow-500 hover:bg-yellow-700'}`}
+        className={`w-full py-2 px-4 font-semibold rounded-md transition-all duration-300 ease-in-out transform hover:scale-105
+          ${loading ? 'bg-secondary text-text cursor-wait' : 'bg-button text-button-text hover:bg-button-hover'}`}
       >
         {loading ? <span className="animate-pulse">🤔 Thinking...</span> : '🔍 Generate Caption'}
       </button>
 
       {caption && (
         <div className="mt-8 text-center space-y-4">
-          <div className="text-base dark:text-yellow-100">
-            <span className="block text-sm text-gray-500 dark:text-yellow-400">Caption:</span>
+          <div className="text-base text-text">
+            <span className="block text-sm text-secondary">Caption:</span>
             <div className="font-medium">" {caption}. "</div>
           </div>
 
           <div className="flex justify-center items-center gap-4">
-            <button
-              onClick={async () => {
-                const formData = new FormData();
-                formData.append('text', caption);
-                formData.append('language', language);
-                const response = await fetch('http://localhost:8000/tts', {
-                  method: 'POST',
-                  body: formData,
-                });
-                const blob = await response.blob();
-                const audioUrl = URL.createObjectURL(blob);
-                const audio = new Audio(audioUrl);
-                audio.preload = 'auto';
-
-                // Wait until browser is ready, then manually delay 300ms
-                audio.addEventListener('canplaythrough', () => {
-                  setTimeout(() => {
-                    audio.play().catch(console.error);
-                  }, 300);
-                }, { once: true });
-
-                audio.load();
-              }}
-              className="px-4 py-2 bg-yellow-500 hover:bg-yellow-700 text-black font-semibold rounded-md transition"
-            >
-              🔊 Play Audio
-            </button>
+            {audioUrl && (
+              <button
+                onClick={() => playAudio(audioUrl)}
+                className="px-4 py-2 bg-button text-button-text font-semibold rounded-md transition-all duration-300 ease-in-out hover:bg-button-hover transform hover:scale-105 flex items-center gap-2 justify-center"
+              >
+                <Play size={20} /> Play Again
+              </button>
+            )}
+            {audioUrl && (
+              <a
+                href={audioUrl}
+                download="caption_audio.mp3"
+                className="px-4 py-2 bg-button text-button-text font-semibold rounded-md transition-all duration-300 ease-in-out hover:bg-button-hover transform hover:scale-105 flex items-center gap-2 justify-center"
+              >
+                <Download size={20} /> Download Audio
+              </a>
+            )}
           </div>
         </div>
       )}
