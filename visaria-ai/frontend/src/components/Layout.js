@@ -23,6 +23,7 @@ export default function Layout({ children }) {
         <div className="hidden md:flex items-center space-x-4">
           <NavLink href="/" label="Home" active={router.pathname === "/"} />
           <NavLink href="/about" label="About" active={router.pathname === "/about"} />
+          <NavLink href="/history" label="History" active={router.pathname === "/history"} />
           <ThemeToggleButton theme={theme} toggleTheme={toggleTheme} />
         </div>
 
@@ -47,6 +48,7 @@ export default function Layout({ children }) {
             <div className="flex flex-col items-center py-4 space-y-4">
               <NavLink href="/" label="Home" active={router.pathname === "/"} onClick={() => setIsMenuOpen(false)} />
               <NavLink href="/about" label="About" active={router.pathname === "/about"} onClick={() => setIsMenuOpen(false)} />
+              <NavLink href="/history" label="History" active={router.pathname === "/history"} onClick={() => setIsMenuOpen(false)} />
             </div>
           </motion.div>
         )}

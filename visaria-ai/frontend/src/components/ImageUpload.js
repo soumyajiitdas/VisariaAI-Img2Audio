@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Play, Download } from 'lucide-react';
 import LanguageDropdown from './LanguageDropdown'; // Import the new component
+import { db } from '../db';
 
 export default function ImageUpload() {
   const [image, setImage] = useState(null);
@@ -81,35 +82,72 @@ export default function ImageUpload() {
       let finalCaption = data.caption || '😵‍💫 No caption returned..';
 
       if (language !== 'en') {
-        const translateForm = new FormData();
-        translateForm.append('text', finalCaption);
-        translateForm.append('target_lang', language);
+        try {
+          const translateForm = new FormData();
+          translateForm.append('text', finalCaption);
+          translateForm.append('target_lang', language);
 
-        const transRes = await fetch('http://localhost:8000/translate', {
-          method: 'POST',
-          body: translateForm,
-        });
+          const transRes = await fetch('http://localhost:8000/translate', {
+            method: 'POST',
+            body: translateForm,
+          });
 
-        const transData = await transRes.json();
-        if (transData.translated_text) {
-          finalCaption = transData.translated_text;
+          if (transRes.ok) {
+            const transData = await transRes.json();
+            if (transData.translated_text) {
+              finalCaption = transData.translated_text;
+            }
+          } else {
+            console.error('Translation request failed');
+          }
+        } catch (error) {
+          console.error('Error during translation:', error);
         }
       }
 
       setCaption(finalCaption);
 
-      // Automatically play audio
-      const audioFormData = new FormData();
-      audioFormData.append('text', finalCaption);
-      audioFormData.append('language', language);
-      const audioResponse = await fetch('http://localhost:8000/tts', {
-        method: 'POST',
-        body: audioFormData,
-      });
-      const audioBlob = await audioResponse.blob();
-      const newAudioUrl = URL.createObjectURL(audioBlob);
-      setAudioUrl(newAudioUrl);
-      playAudio(newAudioUrl);
+      let audioBlob = null;
+      let newAudioUrl = null;
+
+      try {
+        const audioFormData = new FormData();
+        audioFormData.append('text', finalCaption);
+        audioFormData.append('language', language);
+        const audioResponse = await fetch('http://localhost:8000/tts', {
+          method: 'POST',
+          body: audioFormData,
+        });
+
+        if (audioResponse.ok) {
+          audioBlob = await audioResponse.blob();
+          newAudioUrl = URL.createObjectURL(audioBlob);
+          setAudioUrl(newAudioUrl);
+        } else {
+          console.error('TTS request failed');
+          setAudioUrl(null);
+        }
+      } catch (error) {
+        console.error('Error fetching TTS:', error);
+        setAudioUrl(null);
+      }
+
+
+      // Save to history
+      try {
+        await db.history.add({
+          caption: finalCaption,
+          image: image, // image is a File object (which is a Blob)
+          audio: audioBlob, // audioBlob is a Blob or null
+          timestamp: Date.now(),
+        });
+      } catch (error) {
+        console.error("Failed to save history:", error);
+      }
+
+      if (newAudioUrl) {
+        playAudio(newAudioUrl);
+      }
     } catch (e) {
       console.error(e);
       setCaption('😵 Something went wrong..');
