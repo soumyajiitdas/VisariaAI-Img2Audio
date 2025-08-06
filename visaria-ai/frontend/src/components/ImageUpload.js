@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Play, Download } from 'lucide-react';
+import LanguageDropdown from './LanguageDropdown'; // Import the new component
 
 export default function ImageUpload() {
   const [image, setImage] = useState(null);
@@ -121,7 +122,7 @@ export default function ImageUpload() {
     <div className="bg-card p-6 rounded-xl shadow-lg border border-card-border max-w-2xl mx-auto transition-all duration-300 ease-in-out transform hover:scale-[1.01]">
 
       <h2 className="text-3xl font-bold text-center mb-4 text-primary">
-        🖼️ Upload an Image
+        Upload an Image 🖼️
       </h2>
 
       <p className="text-center text-sm text-secondary mb-6">
@@ -129,25 +130,17 @@ export default function ImageUpload() {
       </p>
 
       <div className="mb-5">
-        <label className="block mb-2 font-medium text-text">
-          Select Language 🌐:
-        </label>
-        <select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          className="w-full px-3 py-2 rounded-md border border-input-border bg-input text-text transition-colors duration-300 focus:ring-2 focus:ring-primary focus:border-transparent"
-        >
-          <option value="en">English</option>
-          <option value="hi">Hindi</option>
-          <option value="bn">Bengali</option>
-        </select>
+        <LanguageDropdown 
+          selectedLanguage={language} 
+          onLanguageChange={setLanguage} 
+        />
       </div>
 
       <div
         ref={dropRef}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className="border-2 border-dashed border-input-border rounded-md p-6 mb-4 text-center text-text cursor-pointer transition-all duration-300 ease-in-out hover:border-primary hover:bg-card-border"
+        className="border-2 border-dashed border-input-border rounded-md p-6 mb-4 text-center text-text cursor-pointer transition-all duration-300 ease-in-out hover:border-primary hover:bg-card-border/50"
         onClick={() => document.getElementById('fileInput').click()}
       >
         Drag and drop your image here or click to browse
@@ -172,7 +165,7 @@ export default function ImageUpload() {
       <button
         onClick={handleUpload}
         disabled={loading}
-        className={`w-full py-2 px-4 font-semibold rounded-md transition-all duration-300 ease-in-out transform hover:scale-105
+        className={`w-full py-3 px-4 font-semibold rounded-md transition-all duration-300 ease-in-out transform hover:scale-105
           ${loading ? 'bg-secondary text-text cursor-wait' : 'bg-button text-button-text hover:bg-button-hover'}`}
       >
         {loading ? <span className="animate-pulse">🤔 Thinking...</span> : '🔍 Generate Caption'}

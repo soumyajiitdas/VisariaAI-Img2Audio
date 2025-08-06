@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import Layout from '../components/Layout';
 import { createContext, useContext, useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const ThemeContext = createContext(null);
 
@@ -30,11 +31,21 @@ function ThemeProvider({ children }) {
   );
 }
 
-export default function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps, router }) {
   return (
     <ThemeProvider>
       <Layout>
-        <Component {...pageProps} />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={router.route}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+          >
+            <Component {...pageProps} />
+          </motion.div>
+        </AnimatePresence>
       </Layout>
     </ThemeProvider>
   );

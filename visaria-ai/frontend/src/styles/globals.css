@@ -35,4 +35,10 @@
 body {
   color: var(--color-text);
   background-color: var(--color-background);
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Smooth transitions for all elements */
+* {
+  transition: background-color 0.5s ease, color 0.3s ease, border-color 0.4s ease;
 }
