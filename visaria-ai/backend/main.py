@@ -27,6 +27,10 @@ app.include_router(translate.router)
 def root():
     return {"message": "VisariaAI backend running"}
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
