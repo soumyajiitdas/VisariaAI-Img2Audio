@@ -6,8 +6,7 @@ uvicorn==0.35.0
 
 # for BLIP model
 transformers==4.41.1
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.3.0+cpu
+torch==2.8.0+cpu
 Pillow
 numpy==1.26.4
 
