@@ -73,7 +73,7 @@ export default function ImageUpload() {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/caption', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/caption`, {
         method: 'POST',
         body: formData,
       });
@@ -87,7 +87,7 @@ export default function ImageUpload() {
           translateForm.append('text', finalCaption);
           translateForm.append('target_lang', language);
 
-          const transRes = await fetch('http://localhost:8000/translate', {
+          const transRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/translate`, {
             method: 'POST',
             body: translateForm,
           });
@@ -114,7 +114,7 @@ export default function ImageUpload() {
         const audioFormData = new FormData();
         audioFormData.append('text', finalCaption);
         audioFormData.append('language', language);
-        const audioResponse = await fetch('http://localhost:8000/tts', {
+        const audioResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tts`, {
           method: 'POST',
           body: audioFormData,
         });

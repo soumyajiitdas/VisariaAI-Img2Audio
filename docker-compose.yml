@@ -1,0 +1,13 @@
+services:
+  backend:
+    build: ./visaria-ai/backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+  frontend:
+    build: ./visaria-ai/frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
