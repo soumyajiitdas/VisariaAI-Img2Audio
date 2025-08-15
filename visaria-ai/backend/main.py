@@ -10,14 +10,14 @@ load_dotenv()
 
 app = FastAPI()
 
-app.include_router(image_caption.router)
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://visaria-ai.onrender.com", os.getenv("CORS_ORIGIN", "http://localhost:3000")],
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(image_caption.router)
 
 app.include_router(tts.router)
 
