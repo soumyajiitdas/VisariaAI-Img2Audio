@@ -1,8 +1,8 @@
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-// Remove trailing slash if present
-export const API_URL = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+// Remove trailing slash if present and add /api prefix
+export const API_URL = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) + '/api' : API_BASE_URL + '/api';
 
 // API endpoints
 export const ENDPOINTS = {

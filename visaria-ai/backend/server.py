@@ -10,6 +10,8 @@ from typing import List
 import uuid
 from datetime import datetime
 
+# Import API route modules
+from api.routes import image_caption, translate, tts
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -53,15 +55,10 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
-@api_router.post("/caption")
-async def generate_caption():
-    # Placeholder response for the missing caption endpoint
-    return {
-        "success": True,
-        "message": "Caption endpoint is working",
-        "caption": "This is a placeholder caption. To implement actual image captioning, you would need to add AI model integration.",
-        "note": "Add your image captioning logic here"
-    }
+# Include all API route modules
+api_router.include_router(image_caption.router)
+api_router.include_router(translate.router)
+api_router.include_router(tts.router)
 
 # Include the router in the main app
 app.include_router(api_router)
