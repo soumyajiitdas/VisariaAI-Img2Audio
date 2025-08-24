@@ -24,8 +24,3 @@ def generate_caption(image_bytes):
     out = model.generate(**inputs, max_new_tokens=30)
     caption = processor.decode(out[0], skip_special_tokens=True)
     return caption
-
-
-
-
-

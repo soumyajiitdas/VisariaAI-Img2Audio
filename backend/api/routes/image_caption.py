@@ -1,13 +1,13 @@
-from fastapi import APIRouter, Form
-from googletrans import Translator
+from fastapi import APIRouter, UploadFile, File
+from models.blip_model import generate_caption
 
 router = APIRouter()
-translator = Translator()
 
-@router.post("/translate")
-async def translate_caption(text: str = Form(...), target_lang: str = Form(...)):
+@router.post("/caption")
+async def generate_image_caption(file: UploadFile = File(...)):
     try:
-        translated = translator.translate(text, dest=target_lang)
-        return {"translated_text": translated.text}
+        image_bytes = await file.read()
+        caption = generate_caption(image_bytes)
+        return {"caption": caption}
     except Exception as e:
         return {"error": str(e)}
