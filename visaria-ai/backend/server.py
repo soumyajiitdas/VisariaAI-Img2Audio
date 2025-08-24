@@ -53,13 +53,23 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+@api_router.post("/caption")
+async def generate_caption():
+    # Placeholder response for the missing caption endpoint
+    return {
+        "success": True,
+        "message": "Caption endpoint is working",
+        "caption": "This is a placeholder caption. To implement actual image captioning, you would need to add AI model integration.",
+        "note": "Add your image captioning logic here"
+    }
+
 # Include the router in the main app
 app.include_router(api_router)
 
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=os.environ.get('CORS_ORIGINS', 'https://my-visaria-ai.onrender.com,*').split(','),
     allow_methods=["*"],
     allow_headers=["*"],
 )
