@@ -60,6 +60,15 @@ api_router.include_router(image_caption.router)
 api_router.include_router(translate.router)
 api_router.include_router(tts.router)
 
+# Add root route for health checks and main URL access
+@app.get("/")
+async def root():
+    return {"message": "VisariaAI Backend is running! API endpoints available at /api/"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "service": "VisariaAI Backend"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
