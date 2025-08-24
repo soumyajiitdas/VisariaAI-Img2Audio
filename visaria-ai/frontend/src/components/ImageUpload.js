@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Play, Download } from 'lucide-react';
 import LanguageDropdown from './LanguageDropdown'; // Import the new component
 import { db } from '../db';
+import { apiCall, ENDPOINTS } from '../config/api';
 
 export default function ImageUpload() {
   const [image, setImage] = useState(null);
@@ -73,7 +74,7 @@ export default function ImageUpload() {
 
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/caption`, {
+      const res = await apiCall(ENDPOINTS.CAPTION, {
         method: 'POST',
         body: formData,
       });
@@ -87,7 +88,7 @@ export default function ImageUpload() {
           translateForm.append('text', finalCaption);
           translateForm.append('target_lang', language);
 
-          const transRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/translate`, {
+          const transRes = await apiCall(ENDPOINTS.TRANSLATE, {
             method: 'POST',
             body: translateForm,
           });
@@ -114,7 +115,7 @@ export default function ImageUpload() {
         const audioFormData = new FormData();
         audioFormData.append('text', finalCaption);
         audioFormData.append('language', language);
-        const audioResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tts`, {
+        const audioResponse = await apiCall(ENDPOINTS.TTS, {
           method: 'POST',
           body: audioFormData,
         });
@@ -150,7 +151,16 @@ export default function ImageUpload() {
       }
     } catch (e) {
       console.error(e);
-      setCaption('😵 Something went wrong..');
+      let errorMessage = '😵 Something went wrong..';
+      
+      // Provide more specific error messages for CORS issues
+      if (e.message.includes('Network error') || e.message.includes('CORS')) {
+        errorMessage = '🌐 Connection error: Unable to reach the server. Please check if the backend is running and CORS is configured correctly.';
+      } else if (e.message.includes('fetch')) {
+        errorMessage = '🔌 Network error: Please check your internet connection and server status.';
+      }
+      
+      setCaption(errorMessage);
     } finally {
       setLoading(false);
     }
