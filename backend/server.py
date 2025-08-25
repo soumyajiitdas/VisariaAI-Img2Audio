@@ -63,7 +63,7 @@ api_router.include_router(tts.router)
 # Add root route for health checks and main URL access
 @app.get("/")
 async def root():
-    return {"message": "VisariaAI Backend is running! API endpoints available at /api/"}
+    return {"message": "VisariaAI Backend is running! API endpoints available at /api"}
 
 @app.get("/health")
 async def health_check():
@@ -75,7 +75,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', 'https://my-visaria-ai.onrender.com,*').split(','),
+    allow_origins=os.environ.get('CORS_ORIGINS', 'https://visaria-ai.vercel.app,*').split(','),
     allow_methods=["*"],
     allow_headers=["*"],
 )
