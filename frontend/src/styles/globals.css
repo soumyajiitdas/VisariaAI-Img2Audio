@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-background: #fefaf6; /* Light Cream */
+  --color-text: #3e2723; /* Dark Brown */
+  --color-primary: #ffc107; /* Amber Yellow */
+  --color-secondary: #6d4c41; /* Brown */
+  --color-accent: #e65100; /* Deep Orange */
+  --color-card: #ffffff; /* White */
+  --color-card-border: #ffe082; /* Light Amber */
+  --color-input: #ffffff;
+  --color-input-border: #ffecb3; /* Lighter Amber */
+  --color-button: #ffc107;
+  --color-button-text: #3e2723;
+  --color-button-hover: #ffa000; /* Darker Amber */
+}
+
+.dark {
+  --color-background: #000000; /* Pitch Black */
+  --color-text: #ffffff; /* White */
+  --color-primary: #ccac00; /* Darker Gold */
+  --color-secondary: #f0f0f0; /* Off-white for secondary text */
+  --color-accent: #ffbf00; /* Golden Yellow */
+  --color-card: #1a1a1a; /* Dark Gray for cards */
+  --color-card-border: #333333; /* Slightly lighter dark gray */
+  --color-input: #1a1a1a;
+  --color-input-border: #333333;
+  --color-button: #ffd700;
+  --color-button-text: #000000; /* Black text on gold button */
+  --color-button-hover: #e6be00; /* Darker Gold */
+}
+
+body {
+  color: var(--color-text);
+  background-color: var(--color-background);
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Smooth transitions for all elements */
+* {
+  transition: background-color 0.5s ease, color 0.3s ease, border-color 0.4s ease;
+}
