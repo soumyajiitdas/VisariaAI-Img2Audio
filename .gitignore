@@ -207,6 +207,12 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+<<<<<<< HEAD
+
+cache/
+.next/
+node_modules/
+=======
 # Optional: secrets or model files
 .env
 *.pth
@@ -235,3 +241,4 @@ audio_output/
 temp/
 tmp/
 temp_audio/
+>>>>>>> 3b3ae6038f8caf01d05a536b4e705163d1fccf47
