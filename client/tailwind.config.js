@@ -1,21 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
   content: [
-    './app/**/*.{js,ts,jsx,tsx}',         // for App Router
-    './pages/**/*.{js,ts,jsx,tsx}',       // for Page Router
-    './components/**/*.{js,ts,jsx,tsx}',  // reusable components
-    './src/**/*.{js,ts,jsx,tsx}',         // entire src folder if applicable
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        gold: {
-          400: '#facc15',
-          500: '#f59e0b',
-          700: '#b45309',
-        },
-        // Custom colors using CSS variables for theming
         background: 'var(--color-background)',
         text: 'var(--color-text)',
         primary: 'var(--color-primary)',
@@ -28,10 +21,27 @@ module.exports = {
         button: 'var(--color-button)',
         'button-text': 'var(--color-button-text)',
         'button-hover': 'var(--color-button-hover)',
+        focus: 'var(--color-focus)',
+        success: 'var(--color-success)',
+        error: 'var(--color-error)',
+      },
+      fontSize: {
+        'base': 'var(--font-size-base)',
+        'lg': 'var(--font-size-lg)',
+        'xl': 'var(--font-size-xl)',
+        '2xl': 'var(--font-size-2xl)',
+      },
+      spacing: {
+        '18': '4.5rem',
+        '22': '5.5rem',
+      },
+      minHeight: {
+        'touch': '44px',
+      },
+      minWidth: {
+        'touch': '44px',
       }
-    }
+    },
   },
   plugins: [],
-};
-
-
+}
