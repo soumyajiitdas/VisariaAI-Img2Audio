@@ -38,7 +38,7 @@ cd VisariaAI-Img2Audio/visaria-ai
 ### 2. 🧩 Frontend Setup (Next.js + Tailwind) :
 
 ```
-cd frontend
+cd client
 npm install
 npm run dev
 ```
@@ -49,8 +49,7 @@ npm run dev
 ### 3. 🧩 Backend Setup (FastAPI) :
 
 ```
-cd..                  # if you are in frontend folder
-cd backend
+cd server
 python -m venv venv           # create a 'venv' python virtual env.
 .\venv\Scripts\Activate           # for Windows
 pip install -r requirements.txt
@@ -64,13 +63,13 @@ uvicorn main:app --reload
 
 ```
 visaria-ai/
-├── backend/         # FastAPI backend
+├── server/         # FastAPI backend
 |   ├── api/routs
 |   ├── models
 |   ├── main.py
 |   └── requirements.txt
 |
-└── frontend/        # Next.js + Tailwind frontend
+└── client/        # Next.js + Tailwind frontend
     ├── components
     ├── pages
     └── styles
