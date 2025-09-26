@@ -2,102 +2,306 @@
 
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Moon, Sun, Menu, X } from 'lucide-react';
-import { useContext, useState } from 'react';
+import { Moon, Sun, Menu, X, Contrast } from 'lucide-react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import { ThemeContext } from '../pages/_app';
-import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Layout({ children }) {
   const router = useRouter();
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [accessibilityMode, setAccessibilityMode] = useState('normal');
+  const [textSize, setTextSize] = useState('large');
+  const skipLinkRef = useRef(null);
+
+  // Load text size from localStorage on component mount
+  useEffect(() => {
+    const savedTextSize = localStorage.getItem('textSize') || 'large';
+    setTextSize(savedTextSize);
+  }, []);
+
+  // Cycle through text sizes: normal → large → extra-large → normal
+  const cycleTextSize = () => {
+    let nextSize;
+    switch (textSize) {
+      case 'normal':
+        nextSize = 'large';
+        break;
+      case 'large':
+        nextSize = 'extra-large';
+        break;
+      case 'extra-large':
+        nextSize = 'normal';
+        break;
+      default:
+        nextSize = 'large';
+    }
+    setTextSize(nextSize);
+    localStorage.setItem('textSize', nextSize);
+  };
+
+  // Get display info for current text size
+  const getTextSizeInfo = () => {
+    switch (textSize) {
+      case 'normal':
+        return { label: 'Normal', icon: 'Aa', description: 'Normal text size' };
+      case 'large':
+        return { label: 'Large', icon: 'T', description: 'Large text size' };
+      case 'extra-large':
+        return { label: 'XL', icon: 'XL', description: 'Extra large text size' };
+      default:
+        return { label: 'Large', icon: 'T', description: 'Large text size' };
+    }
+  };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Alt + 1: Skip to main content
+      if (e.altKey && e.key === '1') {
+        e.preventDefault();
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) {
+          mainContent.focus();
+          mainContent.scrollIntoView();
+        }
+      }
+      // Alt + 2: Skip to navigation
+      if (e.altKey && e.key === '2') {
+        e.preventDefault();
+        const nav = document.getElementById('main-navigation');
+        if (nav) {
+          nav.focus();
+          nav.scrollIntoView();
+        }
+      }
+      // Escape to close mobile menu
+      if (e.key === 'Escape' && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isMenuOpen]);
+
+  // Apply accessibility modes
+  useEffect(() => {
+    const body = document.body;
+    // Remove existing classes
+    body.classList.remove('high-contrast', 'large-text', 'extra-large-text');
+    
+    // Apply accessibility mode
+    if (accessibilityMode === 'high-contrast') {
+      body.classList.add('high-contrast');
+    }
+    
+    // Apply text size
+    if (textSize === 'large') {
+      body.classList.add('large-text');
+    } else if (textSize === 'extra-large') {
+      body.classList.add('extra-large-text');
+    }
+  }, [accessibilityMode, textSize]);
 
   return (
     <div className="min-h-screen bg-background text-text">
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur border-b border-card-border shadow-sm px-4 sm:px-6 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-extrabold tracking-tight text-primary">
-          Visaria<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">AI🔊</span>
-        </h1>
+      {/* Skip Links for Screen Readers */}
+      <div className="sr-only">
+        <a href="#main-content" className="skip-link">
+          Skip to main content (Alt + 1)
+        </a>
+        <a href="#main-navigation" className="skip-link">
+          Skip to navigation (Alt + 2)
+        </a>
+      </div>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center space-x-4">
-          <NavLink href="/" label="Home" active={router.pathname === "/"} />
-          <NavLink href="/about" label="About" active={router.pathname === "/about"} />
-          <NavLink href="/history" label="History" active={router.pathname === "/history"} />
-          <ThemeToggleButton theme={theme} toggleTheme={toggleTheme} />
-        </div>
+      {/* Accessible Header */}
+      <header 
+        role="banner" 
+        className="bg-background border-b-4 border-card-border p-6"
+      >
+        {/* Main Navigation */}
+        <nav 
+          id="main-navigation"
+          role="navigation" 
+          aria-label="Main navigation"
+          className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6"
+        >
+          {/* Logo and Title */}
+          <div className="flex items-center justify-between">
+            <Link 
+              href="/" 
+              className="text-2xl lg:text-xl font-bold text-primary focus:outline-none focus:ring-4 focus:ring-focus rounded-lg p-2"
+              aria-label="VisariaAI - Go to home page"
+            >
+              <h1 className="inline">
+                VisariaAI
+                <span className="text-accent ml-2" aria-hidden="true">🔊</span>
+              </h1>
+            </Link>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center">
-          <ThemeToggleButton theme={theme} toggleTheme={toggleTheme} />
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="ml-2 p-2 rounded-md text-text">
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </nav>
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="lg:hidden large-click-target bg-card border-2 border-card-border rounded-lg p-3 focus:outline-none focus:ring-4 focus:ring-focus"
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background/90 backdrop-blur-sm border-b border-card-border"
+          {/* Desktop Navigation Links */}
+          <div className="hidden lg:flex items-center gap-6">
+            <NavLinkList currentPath={router.pathname} />
+            <AccessibilityControls 
+              theme={theme}
+              toggleTheme={toggleTheme}
+              accessibilityMode={accessibilityMode}
+              setAccessibilityMode={setAccessibilityMode}
+              textSize={textSize}
+              cycleTextSize={cycleTextSize}
+              getTextSizeInfo={getTextSizeInfo}
+            />
+          </div>
+
+          {/* Mobile Menu */}
+          <div
+            id="mobile-menu"
+            className={`lg:hidden ${isMenuOpen ? 'block' : 'hidden'} mt-6 space-y-4`}
+            aria-hidden={!isMenuOpen}
           >
-            <div className="flex flex-col items-center py-4 space-y-4">
-              <NavLink href="/" label="Home" active={router.pathname === "/"} onClick={() => setIsMenuOpen(false)} />
-              <NavLink href="/about" label="About" active={router.pathname === "/about"} onClick={() => setIsMenuOpen(false)} />
-              <NavLink href="/history" label="History" active={router.pathname === "/history"} onClick={() => setIsMenuOpen(false)} />
+            <NavLinkList currentPath={router.pathname} mobile={true} />
+            <div className="border-t-2 border-card-border pt-4">
+              <AccessibilityControls 
+                theme={theme}
+                toggleTheme={toggleTheme}
+                accessibilityMode={accessibilityMode}
+                setAccessibilityMode={setAccessibilityMode}
+                textSize={textSize}
+                cycleTextSize={cycleTextSize}
+                getTextSizeInfo={getTextSizeInfo}
+                mobile={true}
+              />
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </nav>
+      </header>
 
       {/* Main Content */}
-      <main className="px-4 sm:px-6 py-10 max-w-8xl mx-auto">
+      <main 
+        id="main-content"
+        role="main" 
+        className="flex-1 p-6 lg:p-8 max-w-6xl mx-auto w-full"
+        tabIndex="-1"
+      >
         {children}
       </main>
+
+      {/* Accessible Footer */}
+      <footer 
+        role="contentinfo" 
+        className="bg-card border-t-4 border-card-border p-6 text-center"
+      >
+        <p className="text-secondary">
+          <span className="font-semibold">VisariaAI</span> - 
+          Accessible AI for Visual Interpretation and Audio Narration
+        </p>
+        <p className="text-secondary mt-2 text-sm">
+          Press Alt + 1 for main content, Alt + 2 for navigation
+        </p>
+      </footer>
     </div>
   );
 }
 
-function ThemeToggleButton({ theme, toggleTheme }) {
+// Navigation Links Component
+function NavLinkList({ currentPath, mobile = false }) {
+  const links = [
+    { href: "/", label: "Home", description: "Upload and process images" },
+    { href: "/about", label: "About", description: "Learn about VisariaAI" },
+    { href: "/history", label: "History", description: "View processed images history" }
+  ];
+
   return (
-    <button
-      onClick={toggleTheme}
-      className="px-3 py-1.5 text-sm rounded bg-button text-button-text hover:bg-button-hover transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center gap-1"
-      aria-label="Toggle theme"
-    >
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={theme}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.2 }}
-          className="flex items-center gap-1"
-        >
-          {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-          <span className="hidden sm:inline">{theme === 'light' ? "Dark" : "Light"}</span>
-        </motion.div>
-      </AnimatePresence>
-    </button>
+    <ul className={`${mobile ? 'flex flex-col space-y-3' : 'flex items-center space-x-6'}`} role="list">
+      {links.map((link) => (
+        <li key={link.href} role="listitem">
+          <Link
+            href={link.href}
+            className={`
+              inline-block px-4 py-3 rounded-lg font-medium large-click-target
+              focus:outline-none focus:ring-4 focus:ring-focus
+              transition-colors duration-200
+              ${currentPath === link.href 
+                ? 'bg-primary text-button-text font-bold border-2 border-primary' 
+                : 'text-text hover:bg-card hover:text-primary border-2 border-transparent'
+              }
+            `}
+            aria-current={currentPath === link.href ? "page" : undefined}
+            aria-describedby={`${link.href.slice(1)}-desc`}
+          >
+            {link.label}
+            <span id={`${link.href.slice(1)}-desc`} className="sr-only">
+              {link.description}
+            </span>
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }
 
-// Reusable NavLink Component
-function NavLink({ href, label, active, onClick }) {
+// Accessibility Controls Component
+function AccessibilityControls({ 
+  theme, 
+  toggleTheme, 
+  accessibilityMode, 
+  setAccessibilityMode, 
+  textSize,
+  cycleTextSize,
+  getTextSizeInfo,
+  mobile = false 
+}) {
   return (
-    <Link
-      href={href}
-      onClick={onClick}
-      className={`text-lg md:text-sm font-medium transition-all duration-300 ease-in-out hover:text-primary ${
-        active ? "underline underline-offset-4 font-semibold text-primary" : "text-text"
-      }`}
-    >
-      {label}
-    </Link>
+    <div className={`${mobile ? 'flex flex-col space-y-3' : 'flex items-center space-x-4'}`}>
+      {/* Theme Toggle */}
+      <button
+        onClick={toggleTheme}
+        className="flex items-center gap-2 px-4 py-3 bg-button text-button-text hover:bg-button-hover rounded-lg font-medium large-click-target focus:outline-none focus:ring-4 focus:ring-focus transition-colors duration-200"
+        aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+      >
+        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+        <span>{theme === 'light' ? "Dark Mode" : "Light Mode"}</span>
+      </button>
+
+      {/* High Contrast Toggle */}
+      <button
+        onClick={() => setAccessibilityMode(accessibilityMode === 'high-contrast' ? 'normal' : 'high-contrast')}
+        className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium large-click-target focus:outline-none focus:ring-4 focus:ring-focus transition-colors duration-200 ${
+          accessibilityMode === 'high-contrast' 
+            ? 'bg-accent text-button-text' 
+            : 'bg-card text-text hover:bg-button hover:text-button-text border-2 border-card-border'
+        }`}
+        aria-label={`${accessibilityMode === 'high-contrast' ? 'Disable' : 'Enable'} high contrast mode`}
+        aria-pressed={accessibilityMode === 'high-contrast'}
+      >
+        <Contrast size={20} />
+        <span>High Contrast</span>
+      </button>
+
+      {/* Single Cycling Text Size Button */}
+      <button
+        onClick={cycleTextSize}
+        className="flex items-center gap-2 px-4 py-3 bg-card text-text hover:bg-button hover:text-button-text border-2 border-card-border hover:border-button rounded-lg font-medium large-click-target focus:outline-none focus:ring-4 focus:ring-focus transition-colors duration-200"
+        aria-label={`Current text size: ${getTextSizeInfo().description}. Click to cycle to next size.`}
+        title={`Text Size: ${getTextSizeInfo().label} (Click to cycle)`}
+      >
+        <span className="font-bold text-sm">{getTextSizeInfo().icon}</span>
+        <span className="text-sm">{getTextSizeInfo().label}</span>
+      </button>
+    </div>
   );
 }
-
