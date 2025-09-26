@@ -24,6 +24,9 @@ module.exports = {
         focus: 'var(--color-focus)',
         success: 'var(--color-success)',
         error: 'var(--color-error)',
+        'disabled-bg': 'var(--color-disabled-bg)',
+        'disabled-text': 'var(--color-disabled-text)',
+        'disabled-border': 'var(--color-disabled-border)',
       },
       fontSize: {
         'base': 'var(--font-size-base)',

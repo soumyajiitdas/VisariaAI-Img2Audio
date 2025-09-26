@@ -409,8 +409,8 @@ export default function ImageUpload() {
               flex-1 flex items-center justify-center gap-3 py-4 px-6 font-bold text-lg rounded-xl large-click-target
               focus:outline-none focus:ring-4 focus:ring-focus transition-all duration-300
               ${loading || !image
-                ? 'bg-secondary text-text cursor-not-allowed opacity-50'
-                : 'bg-button text-button-text hover:bg-button-hover active:scale-95'
+                ? 'btn-disabled border-2'
+                : 'bg-button text-button-text hover:bg-button-hover active:scale-95 border-2 border-button'
               }
             `}
             aria-describedby="generate-button-desc"

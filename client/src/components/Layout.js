@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Moon, Sun, Menu, X, Eye, Type, Contrast } from 'lucide-react';
+import { Moon, Sun, Menu, X, Contrast } from 'lucide-react';
 import { useContext, useState, useRef, useEffect } from 'react';
 import { ThemeContext } from '../pages/_app';
 
@@ -11,8 +11,48 @@ export default function Layout({ children }) {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [accessibilityMode, setAccessibilityMode] = useState('normal');
-  const [textSize, setTextSize] = useState('normal');
+  const [textSize, setTextSize] = useState('large');
   const skipLinkRef = useRef(null);
+
+  // Load text size from localStorage on component mount
+  useEffect(() => {
+    const savedTextSize = localStorage.getItem('textSize') || 'large';
+    setTextSize(savedTextSize);
+  }, []);
+
+  // Cycle through text sizes: normal → large → extra-large → normal
+  const cycleTextSize = () => {
+    let nextSize;
+    switch (textSize) {
+      case 'normal':
+        nextSize = 'large';
+        break;
+      case 'large':
+        nextSize = 'extra-large';
+        break;
+      case 'extra-large':
+        nextSize = 'normal';
+        break;
+      default:
+        nextSize = 'large';
+    }
+    setTextSize(nextSize);
+    localStorage.setItem('textSize', nextSize);
+  };
+
+  // Get display info for current text size
+  const getTextSizeInfo = () => {
+    switch (textSize) {
+      case 'normal':
+        return { label: 'Normal', icon: 'Aa', description: 'Normal text size' };
+      case 'large':
+        return { label: 'Large', icon: 'T', description: 'Large text size' };
+      case 'extra-large':
+        return { label: 'XL', icon: 'XL', description: 'Extra large text size' };
+      default:
+        return { label: 'Large', icon: 'T', description: 'Large text size' };
+    }
+  };
 
   // Handle keyboard navigation
   useEffect(() => {
@@ -122,7 +162,8 @@ export default function Layout({ children }) {
               accessibilityMode={accessibilityMode}
               setAccessibilityMode={setAccessibilityMode}
               textSize={textSize}
-              setTextSize={setTextSize}
+              cycleTextSize={cycleTextSize}
+              getTextSizeInfo={getTextSizeInfo}
             />
           </div>
 
@@ -140,7 +181,8 @@ export default function Layout({ children }) {
                 accessibilityMode={accessibilityMode}
                 setAccessibilityMode={setAccessibilityMode}
                 textSize={textSize}
-                setTextSize={setTextSize}
+                cycleTextSize={cycleTextSize}
+                getTextSizeInfo={getTextSizeInfo}
                 mobile={true}
               />
             </div>
@@ -218,8 +260,9 @@ function AccessibilityControls({
   toggleTheme, 
   accessibilityMode, 
   setAccessibilityMode, 
-  textSize, 
-  setTextSize, 
+  textSize,
+  cycleTextSize,
+  getTextSizeInfo,
   mobile = false 
 }) {
   return (
@@ -249,37 +292,16 @@ function AccessibilityControls({
         <span>High Contrast</span>
       </button>
 
-      {/* Text Size Controls */}
-      <div className="flex items-center gap-2">
-        <span className="text-sm font-medium sr-only">Text Size:</span>
-        <button
-          onClick={() => setTextSize(textSize === 'large' ? 'normal' : 'large')}
-          className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium large-click-target focus:outline-none focus:ring-4 focus:ring-focus transition-colors duration-200 ${
-            textSize === 'large'
-              ? 'bg-primary text-button-text'
-              : 'bg-card text-text hover:bg-button hover:text-button-text border-2 border-card-border'
-          }`}
-          aria-label={`${textSize === 'large' ? 'Disable' : 'Enable'} large text`}
-          aria-pressed={textSize === 'large'}
-        >
-          <Type size={20} />
-          <span className="text-sm">Large</span>
-        </button>
-        
-        <button
-          onClick={() => setTextSize(textSize === 'extra-large' ? 'normal' : 'extra-large')}  
-          className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium large-click-target focus:outline-none focus:ring-4 focus:ring-focus transition-colors duration-200 ${
-            textSize === 'extra-large'
-              ? 'bg-primary text-button-text'
-              : 'bg-card text-text hover:bg-button hover:text-button-text border-2 border-card-border'
-          }`}
-          aria-label={`${textSize === 'extra-large' ? 'Disable' : 'Enable'} extra large text`}
-          aria-pressed={textSize === 'extra-large'}
-        >
-          <Eye size={20} />
-          <span className="text-sm">XL</span>
-        </button>
-      </div>
+      {/* Single Cycling Text Size Button */}
+      <button
+        onClick={cycleTextSize}
+        className="flex items-center gap-2 px-4 py-3 bg-card text-text hover:bg-button hover:text-button-text border-2 border-card-border hover:border-button rounded-lg font-medium large-click-target focus:outline-none focus:ring-4 focus:ring-focus transition-colors duration-200"
+        aria-label={`Current text size: ${getTextSizeInfo().description}. Click to cycle to next size.`}
+        title={`Text Size: ${getTextSizeInfo().label} (Click to cycle)`}
+      >
+        <span className="font-bold text-sm">{getTextSizeInfo().icon}</span>
+        <span className="text-sm">{getTextSizeInfo().label}</span>
+      </button>
     </div>
   );
 }
