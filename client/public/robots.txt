@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: http://visaria-ai.vercel.app/sitemap.xml
