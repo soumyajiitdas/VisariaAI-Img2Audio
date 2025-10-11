@@ -86,8 +86,8 @@ visaria-ai/
 ## 📷 ScreenShorts :
 
 <p align="center">
-  <img src="assets/home.png" width="46%" style="margin-right: 2%;"/>
-  <img src="assets/about.png" width="46%"/>
+  <img src="media/home.png" width="46%" style="margin-right: 2%;"/>
+  <img src="media/about.png" width="46%"/>
 </p>
 
 

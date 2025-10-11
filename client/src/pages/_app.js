@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import Layout from '../components/Layout';
 import { createContext, useState, useEffect } from 'react';
+import Head from 'next/head';
 
 export const ThemeContext = createContext(null);
 
@@ -62,6 +63,22 @@ export default function MyApp({ Component, pageProps, router }) {
 
   return (
     <ThemeProvider>
+      <Head>
+        <meta name="title" content="Visaria AI | Multilingual Image-to-Speech AI Tool" />
+        <meta name="description" content="An open-source AI-powered accessibility tool that converts images into multilingual spoken descriptions using deep learning-based image captioning and text-to-speech synthesis. Built to empower visually impaired users, it bridges the gap between visual content and human understanding. " />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="google-site-verification" content="qfesxMY6zVrjb1fE3AACzlu9EIKl0FCpgm_CKHltfUg" />
+        <title>Visaria AI | Multilingual Image-to-Speech AI Tool</title>
+
+        <link rel="icon" href="/favicons/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/favicons/android-chrome-192x192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/favicons/android-chrome-512x512.png" />
+        <link rel="manifest" href="/favicons/site.webmanifest" />
+
+      </Head>
       <Layout>
         <Component {...pageProps} />
       </Layout>
