@@ -5,8 +5,7 @@ from io import BytesIO
 import gc
 import os
 
-# Force CPU usage to reduce memory consumption
-device = "cpu"  # Force CPU usage for memory efficiency
+device = "cpu" 
 
 # Initialize processor and model as None
 processor = None
@@ -20,18 +19,16 @@ def _load_blip_model():
             # Load with memory optimizations
             processor = BlipProcessor.from_pretrained(
                 "Salesforce/blip-image-captioning-base",
-                torch_dtype=torch.float32  # Use float32 instead of float16 for CPU
+                torch_dtype=torch.float32
             )
             model = BlipForConditionalGeneration.from_pretrained(
                 "Salesforce/blip-image-captioning-base",
                 torch_dtype=torch.float32,
-                low_cpu_mem_usage=True  # Enable low memory usage
+                low_cpu_mem_usage=True
             ).to(device)
             
-            # Set model to evaluation mode to save memory
             model.eval()
             
-            # Clear any cached memory
             gc.collect()
             
             print("BLIP model loaded successfully with memory optimizations.")
@@ -41,25 +38,23 @@ def _load_blip_model():
 
 def generate_caption(image_bytes):
     try:
-        _load_blip_model()  # Ensure model is loaded
+        _load_blip_model()
         
         # Process image with memory optimization
         image = Image.open(BytesIO(image_bytes)).convert("RGB")
         
-        # Resize image to reduce memory usage (optional)
         max_size = 512
         image.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
         
         # Generate caption with memory optimizations
-        with torch.no_grad():  # Disable gradients to save memory
+        with torch.no_grad():
             inputs = processor(image, return_tensors="pt").to(device)
             
-            # Generate with reduced parameters to save memory
             out = model.generate(
                 **inputs, 
-                max_new_tokens=20,  # Reduced from 30 to save memory
-                do_sample=False,    # Deterministic generation saves memory
-                num_beams=1        # Reduced beam search to save memory
+                max_new_tokens=20,
+                do_sample=False,
+                num_beams=1
             )
             
             caption = processor.decode(out[0], skip_special_tokens=True)
@@ -74,5 +69,4 @@ def generate_caption(image_bytes):
         # Clean up on error
         gc.collect()
         print(f"Error in generate_caption: {e}")
-        # Fallback to a simple description
         return "An image with various visual elements"

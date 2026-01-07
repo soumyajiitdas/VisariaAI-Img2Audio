@@ -20,7 +20,7 @@ export default function Layout({ children }) {
     setTextSize(savedTextSize);
   }, []);
 
-  // Cycle through text sizes: normal → large → extra-large → normal
+  // Cycle through text sizes
   const cycleTextSize = () => {
     let nextSize;
     switch (textSize) {

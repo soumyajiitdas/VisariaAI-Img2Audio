@@ -9,14 +9,12 @@ router = APIRouter()
 @router.post("/caption")
 async def generate_image_caption(file: UploadFile = File(...)):
     try:
-        # Validate file size to prevent memory issues
         image_bytes = await file.read()
         
         # Limit file size to 5MB to prevent memory overflow
         if len(image_bytes) > 5 * 1024 * 1024:
             raise HTTPException(status_code=413, detail="File too large. Please upload an image smaller than 5MB.")
         
-        # Check if we should use lightweight mode based on environment
         use_lightweight = os.getenv('USE_LIGHTWEIGHT_CAPTION', 'false').lower() == 'true'
         
         try:
@@ -41,7 +39,6 @@ async def generate_image_caption(file: UploadFile = File(...)):
     except HTTPException:
         raise
     except Exception as e:
-        # Clean up on any error
         gc.collect()
         print(f"Error in image captioning: {e}")
         return {"error": f"Failed to process image: {str(e)}"}

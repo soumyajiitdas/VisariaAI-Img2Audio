@@ -11,7 +11,6 @@ def analyze_image_basic(image_bytes):
     try:
         image = Image.open(io.BytesIO(image_bytes))
         
-        # Convert to RGB if needed
         if image.mode != 'RGB':
             image = image.convert('RGB')
         
@@ -20,7 +19,6 @@ def analyze_image_basic(image_bytes):
         # Analyze dominant colors
         colors = image.getcolors(maxcolors=256*256*256)
         if colors:
-            # Get most common color
             dominant_color = max(colors, key=lambda x: x[0])[1]
             r, g, b = dominant_color
             
